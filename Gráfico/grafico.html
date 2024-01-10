@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Gráfico de Pizza Interativo</title>
+  <style>
+    #myChart {
+      width: 200px;
+      height: 200px;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+</head>
+
+<body>
+  <div class="grafico"
+    style="display: flex; justify-content: center; align-items: center; flex-direction: column; text-align: center;">
+    
+    <p style="margin-bottom: 2%; font-size: 25px; font-family: 'Poppins', sans-serif; color: #000000;"> Escolha os gêneros
+      de filmes que melhor lhe agrada</p>
+    <div>
+      <button onclick="updateChart(0)">Ação</button>
+      <button onclick="updateChart(1)">Animação</button>
+      <button onclick="updateChart(2)">Aventura</button>
+      <button onclick="updateChart(3)">Comédia</button>
+      <button onclick="updateChart(4)">Documentario</button>
+      <button onclick="updateChart(5)">Drama</button>
+      <button onclick="updateChart(6)">Fantasia</button>
+      <button onclick="updateChart(7)">Faroeste/Western</button>
+      <button onclick="updateChart(8)">Ficção Cientifíca</button>
+      <button onclick="updateChart(9)">Horror</button>
+      <button onclick="updateChart(10)">Guerra</button>
+      <button onclick="updateChart(11)">Musical</button>
+      <button onclick="updateChart(12)">Policial</button>
+      <button onclick="updateChart(13)">Romance</button>
+      <button onclick="updateChart(14)">Suspense</button>
+      <button onclick="updateChart(15)">Terror</button>
+    </div>
+    <h2 id="chartTitle">Inicie selecionando um gênero</h2>
+    <div style="width: 500px; height: 500px; margin: 50px;">
+      <canvas id="myChart"></canvas>
+    </div>
+  </div>
+
+  <script>
+    var isChartInitialized = false;
+    var clicksCount = 0;
+
+    var dummyData = {
+      labels: ["Inicie selecionando um gênero"],
+      datasets: [{
+        data: [1],
+        backgroundColor: ["#808080"],
+        hoverOffset: 4
+      }],
+    };
+
+    var realData = {
+      labels: [
+        "Ação", "Animação", "Aventura", "Comédia", "Documentário", "Drama", "Fantasia", "Faroeste/Western",
+        "Ficção Científica", "Horror", "Guerra", "Musical", "Policial", "Romance", "Suspense", "Terror"
+      ],
+      datasets: [{
+        data: Array(16).fill(0),
+        backgroundColor: [],
+        hoverOffset: 4
+      }],
+    };
+
+    var options = {
+      legend: {
+        display: true,
+        position: "bottom",
+      }
+    };
+
+    var ctx = document.getElementById("myChart").getContext("2d");
+    var myChart = new Chart(ctx, {
+      type: "pie",
+      data: dummyData,
+      options: options,
+    });
+
+    function initializeChartColors() {
+      var colors = [
+        "#000080", "#FF6384", "#36A2EB", "#FF9F40", "#4BC0C0", "#9966FF", "#FFFFFF", "#FFCD56", "#32CD32",
+        "#000000", "#800000", "#00CED1", "#FF4500", "#FF69B4", "#00FF00", "#FF0000"
+      ];
+      realData.datasets[0].backgroundColor = colors;
+    }
+
+    function initializeRandomData() {
+      for (var i = 0; i < realData.datasets[0].data.length; i++) {
+        realData.datasets[0].data[i] = Math.floor(Math.random() * 6);  // Gera um número aleatório entre 0 e 5
+      }
+    }
+
+    function updateChart(index) {
+      if (clicksCount < 5) {
+        if (!isChartInitialized) {
+          initializeChartColors();
+          initializeRandomData();
+          myChart.data = realData;
+          document.getElementById("chartTitle").innerText = "Gêneros que os usuários escolheram"; // Atualiza o título
+          isChartInitialized = true;
+        }
+
+        realData.datasets[0].data[index] = realData.datasets[0].data[index] + 1;
+        myChart.update();
+        clicksCount += 1;
+      } else {
+        swal("Atenção!", "O máximo permitido é 5 gêneros.", "warning");
+      }
+    }
+  </script>
+  
+</body>
+
+</html>
